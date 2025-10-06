@@ -275,15 +275,17 @@ else
     LIBJAVA=""
 fi
 
-# tomcat10 is the latest version
-# tomcat9 is end of life
-# fallback is tomcat10
-if [[ $( apt-cache show tomcat10 2> /dev/null | egrep "Version: 10" | wc -l ) -gt 0 ]]; then
-    echo -e "${BLUE}Found tomcat10 package...${NC}"
-    TOMCAT="tomcat10"
-elif [[ $( apt-cache show tomcat9 2> /dev/null | egrep "Version: 9" | wc -l ) -gt 0 ]]; then
+#Install tomcat9, ten has issues with java compatibility and 1.6 it seems
+
+#add older repos for v9
+add-apt-repository -y -s "deb http://archive.ubuntu.com/ubuntu/ jammy main universe"
+
+if [[ $( apt-cache show tomcat9 2> /dev/null | egrep "Version: 9" | wc -l ) -gt 0 ]]; then
     echo -e "${BLUE}Found tomcat9 package...${NC}"
     TOMCAT="tomcat9"
+elif [[ $( apt-cache show tomcat8 2> /dev/null | egrep "Version: 8" | wc -l ) -gt 0 ]]; then
+    echo -e "${BLUE}Found tomcat8 package...${NC}"
+    TOMCAT="tomcat8"
 else
     echo -e "${RED}Failed. Can't find Tomcat package${NC}" 1>&2
     exit 1
